@@ -1,0 +1,10 @@
+<div class="introduction">
+  <img src="/assets/survey.png" alt="Logo" class="logo">
+
+  <h1>Welcome to the Survey!</h1>
+  
+  <label for="name">Enter your name:</label>
+  <input type="text" id="name" placeholder="Your name here" oninput={{this.updateName}}>
+
+  <button onclick={{this.proceed}} disabled={{not this.name}}>Proceed</button>
+</div>
