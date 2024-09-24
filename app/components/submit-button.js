@@ -5,7 +5,6 @@ export default class SubmitButtonComponent extends Component {
   @action
   handleClick() {
     if (this.args.element.action === 'nextPage') {
-
       this.args.onNextPage();
     }
   }

@@ -7,21 +7,32 @@
   {{#each this.currentPageConfig.elements as |element|}}
     {{#if (eq element.type "text")}}
       <div class="form-group">
-        <label for="name">{{element.label}}</label>
+        <label for={{element.id}}>{{element.label}}</label>
         <input
           type="text"
           id={{element.id}}
-          value={{this.name}}
-          {{on "input" this.updateName}}
+          value={{element.value}}
+          {{on "input" (fn this.updateElementValue element)}}
         >
       </div>
+    {{/if}}
+
+    {{#if (eq element.type "radio")}}
+      <RadioButton @element={{element}} @updateValue={{fn this.updateElementValue element}} />
     {{/if}}
   {{/each}}
 
   <button
     type="button"
+    {{on "click" this.handleBackPage}}
+    disabled={{not this.isBackEnabled}}
+  >
+    Back
+  </button>
+  <button
+    type="button"
     {{on "click" this.handleNextPage}}
-    disabled={{not this.isNextEnabled}}
+    disabled={{this.isNextDisabled}}
   >
     Proceed
   </button>

@@ -1,0 +1,16 @@
+<div class="form-group">
+  <label>{{this.args.element.label}}</label>
+  {{#each this.args.element.options as |option|}}
+    <div class="radio-option">
+      <input
+        type="radio"
+        id={{option.value}}
+        name={{this.args.element.id}}
+        value={{option.value}}
+        {{on "change" this.updateSelection}} 
+        checked={{eq this.args.element.value option.value}}
+      >
+      <label for={{option.value}}>{{option.label}}</label>
+    </div>
+  {{/each}}
+</div>
