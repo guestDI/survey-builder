@@ -1,0 +1,31 @@
+{{page-title "Survey"}}
+<StepBar @currentStep={{this.currentStep}} @totalSteps={{this.totalSteps}} />
+
+<div class="dynamic-page">
+  <h1>{{this.currentPageConfig.name}}</h1>
+  
+  {{#each this.currentPageConfig.elements as |element|}}
+    {{#if (eq element.type "text")}}
+      <div class="form-group">
+        <label for="name">{{element.label}}</label>
+        <input
+          type="text"
+          id={{element.id}}
+          value={{this.name}}
+          {{on "input" this.updateName}}
+        >
+      </div>
+    {{/if}}
+  {{/each}}
+
+  <button
+    type="button"
+    {{on "click" this.handleNextPage}}
+    disabled={{not this.isNextEnabled}}
+  >
+    Proceed
+  </button>
+</div>
+
+
+{{outlet}}
