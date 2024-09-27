@@ -19,13 +19,16 @@ export default class SurveyPageController extends Controller {
   @tracked currentPage = 0;
   totalSteps = this.pages.length;
 
+  @tracked surveyName = "Satisfaction survey"
+
   @tracked pages = [
     {
-      name: 'Overal Info',
+      name: 'General Info',
       elements: [
-        new PageElement('text', 'Department', 'name', true),
-        new PageElement('text', 'Role', 'role', 'name', true),
+        new PageElement('text', 'Department', 'department', true),
+        new PageElement('text', 'Role', 'role', 'role', true),
         new PageElement('text', 'Age', 'age', 'age', true),
+        new PageElement('text', 'Email', 'email', 'email', true),
         new PageElement('radio', 'Select your favorite color', 'favoriteColor', true, [
           { label: 'Red', value: 'red' },
           { label: 'Green', value: 'green' },
@@ -36,8 +39,17 @@ export default class SurveyPageController extends Controller {
     {
       name: 'Work experience',
       elements: [
-        new PageElement('text', 'Previous company', 'prevComp', true),
-        new PageElement('text', 'Previous role', 'currRole', true),
+        new PageElement('text', 'Company', 'prevComp', true),
+        new PageElement('text', 'Role', 'currRole', true),
+        new PageElement('text', 'Role', 'currRole', true),
+      ],
+    },
+    {
+      name: 'Satisfaction',
+      elements: [
+        new PageElement('text', 'Overall satisfaction', 'statisfactionLevel', true),
+        // new PageElement('text', 'Role', 'currRole', true),
+        // new PageElement('text', 'Role', 'currRole', true),
       ],
     },
   ];
@@ -48,29 +60,34 @@ export default class SurveyPageController extends Controller {
     return this.pages[this.currentPage];
   }
 
+  get surveyTitle() {
+    return this.surveyName;
+  }
+
   @action
 updateElementValue(element, eventOrValue) {
   // Если передается событие, это input или change, получаем значение
   const value = eventOrValue.target ? eventOrValue.target.value : eventOrValue;
-  element.value = value;  // Устанавливаем новое значение
+  element.value = value; 
   // this.saveSurveyProgress();  // Сохраняем прогресс в localStorage
 }
 
   get isNextDisabled() {
-    // Проверяем, что все обязательные поля заполнены
     return this.currentPageConfig.elements.some(element => {
       if (element.required) {
         if (element.type === 'radio') {
-          return !element.value;  // Если нет значения, возвращаем true (чтобы кнопка была disabled)
+          return !element.value;  
         } else {
-          // Для текстовых полей проверяем пустые строки
-          return !element.value || element.value.trim() === '';  // Пустое поле
+          return !element.value || element.value.trim() === '';  
         }
       }
-      return false;  // Если поле не обязательное, оно не влияет на состояние кнопки
+      return false;  
     });
   }
   
+  get btnTitle() {
+    return this.currentPage === this.pages.length - 1 ? 'Submit' : 'Proceed';
+  }
   
 
   get isBackEnabled() {
