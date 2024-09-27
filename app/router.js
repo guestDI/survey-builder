@@ -10,4 +10,5 @@ Router.map(function () {
   // this.route('introduction');
   this.route('survey');
   this.route('introduction');
+  this.route('completion');
 });

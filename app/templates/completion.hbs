@@ -1,0 +1,25 @@
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-half-desktop is-three-quarters-tablet is-full-mobile">
+        <div class="box has-text-centered">
+          <h1 class="title is-size-3-mobile is-size-2-tablet is-size-1-desktop">
+            Thank You!
+          </h1>
+          <p class="subtitle">
+            You have successfully completed the survey.
+          </p>
+
+          <div class="buttons is-centered mt-5">
+            <button class="button is-primary" type="button" {{on "click" this.startNewSurvey}}>
+              Start a New Survey
+            </button>
+            <button class="button is-link" type="button" {{on "click" this.goHome}}>
+              Go to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

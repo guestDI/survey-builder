@@ -1,6 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 class PageElement {
   @tracked value = '';
@@ -15,11 +16,11 @@ class PageElement {
 }
 
 export default class SurveyPageController extends Controller {
-  @tracked currentStep = 1;
   @tracked currentPage = 0;
   totalSteps = this.pages.length;
+  @service router;
 
-  @tracked surveyName = "Satisfaction survey"
+  @tracked surveyName = 'Satisfaction survey';
 
   @tracked pages = [
     {
@@ -29,11 +30,17 @@ export default class SurveyPageController extends Controller {
         new PageElement('text', 'Role', 'role', 'role', true),
         new PageElement('text', 'Age', 'age', 'age', true),
         new PageElement('text', 'Email', 'email', 'email', true),
-        new PageElement('radio', 'Select your favorite color', 'favoriteColor', true, [
-          { label: 'Red', value: 'red' },
-          { label: 'Green', value: 'green' },
-          { label: 'Blue', value: 'blue' }
-        ])
+        new PageElement(
+          'radio',
+          'Select your favorite color',
+          'favoriteColor',
+          true,
+          [
+            { label: 'Red', value: 'red' },
+            { label: 'Green', value: 'green' },
+            { label: 'Blue', value: 'blue' },
+          ],
+        ),
       ],
     },
     {
@@ -47,14 +54,32 @@ export default class SurveyPageController extends Controller {
     {
       name: 'Satisfaction',
       elements: [
-        new PageElement('text', 'Overall satisfaction', 'statisfactionLevel', true),
-        // new PageElement('text', 'Role', 'currRole', true),
-        // new PageElement('text', 'Role', 'currRole', true),
+        new PageElement(
+          'text',
+          'Overall satisfaction',
+          'statisfactionLevel',
+          true,
+        ),
+        new PageElement(
+          'text',
+          'Project satisfaction',
+          'projectSatisfaction',
+          true,
+        ),
+        new PageElement(
+          'checkbox',
+          'Select your future plans',
+          'plans',
+          true,
+          [
+            { label: 'Technologies', cheked: false },
+            { label: 'People', cheked: false },
+            { label: 'Other', cheked: false },
+          ],
+        ),
       ],
     },
   ];
-
-  @tracked currentPage = 0;
 
   get currentPageConfig() {
     return this.pages[this.currentPage];
@@ -65,30 +90,31 @@ export default class SurveyPageController extends Controller {
   }
 
   @action
-updateElementValue(element, eventOrValue) {
-  // Если передается событие, это input или change, получаем значение
-  const value = eventOrValue.target ? eventOrValue.target.value : eventOrValue;
-  element.value = value; 
-  // this.saveSurveyProgress();  // Сохраняем прогресс в localStorage
-}
+  updateElementValue(element, eventOrValue) {
+    // Если передается событие, это input или change, получаем значение
+    const value = eventOrValue.target
+      ? eventOrValue.target.value
+      : eventOrValue;
+    element.value = value;
+    // this.saveSurveyProgress();  // Сохраняем прогресс в localStorage
+  }
 
   get isNextDisabled() {
-    return this.currentPageConfig.elements.some(element => {
+    return this.currentPageConfig.elements.some((element) => {
       if (element.required) {
         if (element.type === 'radio') {
-          return !element.value;  
+          return !element.value;
         } else {
-          return !element.value || element.value.trim() === '';  
+          return !element.value || element.value.trim() === '';
         }
       }
-      return false;  
+      return false;
     });
   }
-  
+
   get btnTitle() {
     return this.currentPage === this.pages.length - 1 ? 'Submit' : 'Proceed';
   }
-  
 
   get isBackEnabled() {
     return this.currentPage > 0;
@@ -100,7 +126,7 @@ updateElementValue(element, eventOrValue) {
       this.currentPage++;
       this.currentStep++;
     } else {
-      alert('Survey completed!');
+      this.router.transitionTo('completion');
     }
   }
 

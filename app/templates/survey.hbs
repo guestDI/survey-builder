@@ -3,13 +3,13 @@
     <h3 class="title has-text-centered is-size-3-mobile is-size-3-tablet is-size-2-desktop">
       {{this.surveyTitle}}
     </h3>
-     <!-- Step bar -->
+     {{!-- Step bar --}}
         <StepBar @currentStep={{this.currentStep}} @totalSteps={{this.totalSteps}} />
 
     <div class="columns is-centered">
       <div class="column is-half-desktop is-three-quarters-tablet is-full-mobile">
 
-        <!-- Dynamic Page Content -->
+        {{!-- Dynamic Page Content --}}
         <div class="box">
           <h2 class="subtitle">{{this.currentPageConfig.name}}</h2>
           
@@ -34,10 +34,13 @@
                 <RadioButton @element={{element}} @updateValue={{fn this.updateElementValue element}} />
               </div>
             {{/if}}
+            {{#if (eq element.type "checkbox")}}
+                <Checkbox @element={{element}} @updateValue={{fn this.updateElementValue element}} />
+            {{/if}}
           {{/each}}
         </div>
 
-        <!-- Navigation Buttons -->
+        {{!-- Navigation Buttons --}}
         <div class="buttons is-centered mt-4">
           <button
             class="button is-light"
