@@ -1,9 +1,9 @@
 <div class="form-group">
-  <label for={{this.args.element.id}}>{{this.args.element.label}}</label>
+  <label for={{@element.id}}>{{@element.label}}</label>
   <input
     type="text"
-    id={{this.args.element.id}}
-    value={{this.args.element.value}}
+    id={{@element.id}}
+    value={{@element.value}}
     {{on "input" this.updateValue}}
   >
 </div>

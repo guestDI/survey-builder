@@ -1,13 +1,12 @@
 <div class="form-group">
-  <label>{{this.args.element.label}}</label>
-  {{#each this.args.element.options as |option|}}
+  <label for={{@element.id}}>{{@element.label}}</label>
+  {{#each @element.options as |option|}}
     <div class="checkbox-option">
       <input
         type="checkbox"
-        name={{this.args.element.id}}
+        name={{@element.id}}
         checked={{option.checked}}
-        {{on "change" this.updateSelection}} 
-        checked={{eq this.args.element.value option.value}}
+        {{on "change" this.updateSelection}}
       >
       <label for={{option.value}}>{{option.label}}</label>
     </div>

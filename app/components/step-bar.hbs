@@ -1,5 +1,5 @@
 <div class="step-bar">
-  <div class="step" style="width: {{this.progress}}%;">
-    Step {{this.args.currentStep}} of {{this.args.totalSteps}}
+  <div class="step" style={{htmlSafe (concat "width: " this.calculateWidth "%")}}>
+    Step {{@currentStep}} of {{@totalSteps}}
   </div>
 </div>

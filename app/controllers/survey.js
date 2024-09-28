@@ -6,12 +6,12 @@ import { inject as service } from '@ember/service';
 class PageElement {
   @tracked value = '';
 
-  constructor(type, label, id, required = false, options = []) {
+  constructor({ type, label, id, options = [], validationRules = {} }) {
     this.type = type;
     this.label = label;
     this.id = id;
-    this.required = required;
     this.options = options;
+    this.validationRules = validationRules;
   }
 }
 
@@ -19,6 +19,7 @@ export default class SurveyPageController extends Controller {
   @tracked currentPage = 0;
   totalSteps = this.pages.length;
   @service router;
+  @service formValidator;
 
   @tracked surveyName = 'Satisfaction survey';
 
@@ -26,58 +27,93 @@ export default class SurveyPageController extends Controller {
     {
       name: 'General Info',
       elements: [
-        new PageElement('text', 'Department', 'department', true),
-        new PageElement('text', 'Role', 'role', 'role', true),
-        new PageElement('text', 'Age', 'age', 'age', true),
-        new PageElement('text', 'Email', 'email', 'email', true),
-        new PageElement(
-          'radio',
-          'Select your favorite color',
-          'favoriteColor',
-          true,
-          [
+        new PageElement({
+          type: 'text',
+          label: 'Department',
+          id: 'department',
+          validationRules: { required: true, minLength: 5 },
+        }),
+        new PageElement({
+          type: 'text',
+          label: 'Role',
+          id: 'role',
+          validationRules: { required: true, minLength: 4 },
+        }),
+        new PageElement({
+          type: 'text',
+          label: 'Age',
+          id: 'age',
+          validationRules: { required: true, minLength: 2 },
+        }),
+        new PageElement({
+          type: 'text',
+          label: 'Email',
+          id: 'email',
+          validationRules: { required: true, minLength: 2 },
+        }),
+        new PageElement({
+          type: 'radio',
+          label: 'Select your favorite color',
+          id: 'favoriteColor',
+          options: [
             { label: 'Red', value: 'red' },
             { label: 'Green', value: 'green' },
             { label: 'Blue', value: 'blue' },
-            { value: "other", label: "Other" }
+            { value: 'other', label: 'Other' },
           ],
-        ),
+          validationRules: { required: true, minLength: 2 },
+        }),
       ],
     },
     {
       name: 'Work experience',
       elements: [
-        new PageElement('text', 'Company', 'prevComp', true),
-        new PageElement('text', 'Role', 'currRole', true),
-        new PageElement('text', 'Role', 'currRole', true),
+        new PageElement({
+          type: 'text',
+          label: 'Company',
+          id: 'prevComp',
+          validationRules: { required: true, minLength: 2 },
+        }),
+        new PageElement({
+          type: 'text',
+          label: 'Role',
+          id: 'prevRole',
+          validationRules: { required: true, minLength: 2 },
+        }),
+        new PageElement({
+          type: 'text',
+          label: 'Title',
+          id: 'title',
+          validationRules: { required: true, minLength: 2 },
+        }),
       ],
     },
     {
       name: 'Satisfaction',
       elements: [
-        new PageElement(
-          'text',
-          'Overall satisfaction',
-          'statisfactionLevel',
-          true,
-        ),
-        new PageElement(
-          'text',
-          'Project satisfaction',
-          'projectSatisfaction',
-          true,
-        ),
-        new PageElement(
-          'checkbox',
-          'Select your future plans',
-          'plans',
-          true,
-          [
+        new PageElement({
+          type: 'text',
+          label: 'Overall satisfaction',
+          id: 'statisfactionLevel',
+          validationRules: { required: true, minLength: 2 },
+        }),
+        new PageElement({
+          type: 'text',
+          label: 'Project satisfaction',
+          id: 'projectSatisfaction',
+          validationRules: { required: true, minLength: 2 },
+        }),
+        new PageElement({
+          type: 'checkbox',
+          label: 'Select your future plans',
+          id: 'plans',
+          options: [
             { label: 'Technologies', checked: false },
             { label: 'People', checked: false },
             { label: 'Other', checked: false },
           ],
-        ),
+          validationRules: { required: true },
+        }),
       ],
     },
   ];
@@ -92,25 +128,39 @@ export default class SurveyPageController extends Controller {
 
   @action
   updateElementValue(element, eventOrValue) {
-    // Если передается событие, это input или change, получаем значение
     const value = eventOrValue.target
       ? eventOrValue.target.value
       : eventOrValue;
     element.value = value;
-    // this.saveSurveyProgress();  // Сохраняем прогресс в localStorage
+    localStorage.setItem('survey-progress', JSON.stringify(this.pages));
+  }
+
+  validatePage() {
+    return this.currentPageConfig.elements.every((element) => {
+      if (element.required) {
+        if (!element.value || element.value.trim() === '') {
+          return false;
+        }
+
+        const { validationRules } = element;
+        if (validationRules) {
+          if (
+            validationRules.minLength &&
+            element.value.length < validationRules.minLength
+          ) {
+            return false;
+          }
+          if (validationRules.min && element.value < validationRules.min) {
+            return false;
+          }
+        }
+      }
+      return true;
+    });
   }
 
   get isNextDisabled() {
-    return this.currentPageConfig.elements.some((element) => {
-      if (element.required) {
-        if (element.type === 'radio') {
-          return !element.value;
-        } else {
-          return !element.value || element.value.trim() === '';
-        }
-      }
-      return false;
-    });
+    return !this.validatePage();
   }
 
   get btnTitle() {

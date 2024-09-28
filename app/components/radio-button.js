@@ -3,7 +3,7 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 
 export default class RadioButtonComponent extends Component {
-    @tracked showOtherInput = false;
+  @tracked showOtherInput = false;
 
   @action
   updateSelection(event) {
