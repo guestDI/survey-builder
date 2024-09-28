@@ -39,6 +39,7 @@ export default class SurveyPageController extends Controller {
             { label: 'Red', value: 'red' },
             { label: 'Green', value: 'green' },
             { label: 'Blue', value: 'blue' },
+            { value: "other", label: "Other" }
           ],
         ),
       ],
@@ -72,9 +73,9 @@ export default class SurveyPageController extends Controller {
           'plans',
           true,
           [
-            { label: 'Technologies', cheked: false },
-            { label: 'People', cheked: false },
-            { label: 'Other', cheked: false },
+            { label: 'Technologies', checked: false },
+            { label: 'People', checked: false },
+            { label: 'Other', checked: false },
           ],
         ),
       ],

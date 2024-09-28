@@ -35,7 +35,9 @@
               </div>
             {{/if}}
             {{#if (eq element.type "checkbox")}}
+              <div class="field">
                 <Checkbox @element={{element}} @updateValue={{fn this.updateElementValue element}} />
+              </div>
             {{/if}}
           {{/each}}
         </div>
